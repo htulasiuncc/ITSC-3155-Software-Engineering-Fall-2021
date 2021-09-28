@@ -64,5 +64,39 @@ def longest_consecutive_repeating_char(s):
 def is_palindrome(s):
   # YOUR CODE HERE
 
-  return
+  # intialize the first letter from the left as 0 or the first character
+  letterFromLeft = 0
+  # initialize the first letter from the right as the length of the string minus 1
+  letterFromRight = len(s) - 1
 
+  # while loop where the letter on the left is less than or equal to the one on the right
+  # this ensures that the letters don't cross over
+  while letterFromLeft <= letterFromRight:
+    # if statement setting the letter from the left equal to a blank space to skip
+    # then the letter will move one to the right or add one character count
+    # this accounts for any spaces between words or letters that shouldn't
+    # be considered in a palindrome
+    if s[letterFromLeft] == ' ':
+      letterFromLeft += 1
+
+    # if statement setting the letter from the right equal to a blank space to skip
+    # then the letter will move one to the left or subtract one character count
+    # this accounts for any spaces between words or letters that shouldn't
+    # be considered in a palindrome
+    if s[letterFromRight] == ' ':
+      letterFromRight -= 1
+
+    # if statement comparing the letter from the left to the letter from the right
+    # if they both aren't equal then the statement would return false
+    # the letters are both set to lowercase so that they can be compared
+    if s[letterFromLeft].lower() != s[letterFromRight].lower():
+      return False
+
+    # calls to keep the letters from the left to be analyzed toward the right
+    # or increasing the increment
+    letterFromLeft += 1
+    # calls to keep the letters from the right to be analyzed toward the left
+    # or decreasing the increment
+    letterFromRight -= 1
+
+  return True
