@@ -13,18 +13,17 @@
 def count_threes(n):
   # YOUR CODE HERE
 
-  return
-
+  #returns n divided by 3 typecast as int
+  return int(n/3)
 
 # Part B. longest_consecutive_repeating_char
 # Define a function longest_consecutive_repeating_char(s) that takes
 # a string s and returns the character that has the longest consecutive repeat.
+
 def longest_consecutive_repeating_char(s):
   # YOUR CODE HERE
 
   return
-
-
 # Part C. is_palindrome
 # Define a function is_palindrome(s) that takes a string s
 # and returns whether or not that string is a palindrome.
@@ -35,3 +34,4 @@ def is_palindrome(s):
   # YOUR CODE HERE
 
   return
+
