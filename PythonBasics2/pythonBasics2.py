@@ -26,10 +26,10 @@ def longest_consecutive_repeating_char(s):
   #declares a variable for stringLength and sets it equal to the length of string s
   stringLength = len(s)
   #initializes a count variable to be used to count the characters of the string
-  count = 1
+  count = 0
   #initializes a maximum variable used to stop the count of a string
   #when a maximum amount of repeating letters is reached
-  maximum = 1
+  maximum = 0
   #initializes a variable as the first, or 0 in the array,
   #character of the string s which is an array of characters
   character = s[0]
