@@ -21,28 +21,28 @@ def count_threes(n):
   n = list(str(n))
 
   #declares the direcotry
-  directory = {}
+  dictionary = {}
 
-  #populates the directory with the three multiples of 3 and sets them equal to zero
-  directory[3] = 0
-  directory[6] = 0
-  directory[9] = 0
+  #populates the dictionary with the three multiples of 3 and sets them equal to zero
+  dictionary[3] = 0
+  dictionary[6] = 0
+  dictionary[9] = 0
 
   #for loop to count the number of multiples of 3
   for i in n:
     number = int(i)
     #if loop to test if the the number in question is divisible by 3, with no remainder, and isn't 0
     if number % 3 == 0 and number != 0:
-      #increments the directory number to the next digit
-      directory[number] = directory[number] + 1
+      #increments the dictionary number to the next digit
+      dictionary[number] = dictionary[number] + 1
 
   #initializes the max value and index to -1
   #-1 indicates the last number in a sequence so this will count from
   #the last value left off on during iteration
   maxValue = -1
   index = -1
-  #for loop to test the current and next values in a directory to see if the next value is the last value
-  for current, next in directory.items():
+  #for loop to test the current and next values in a dictionary to see if the next value is the last value
+  for current, next in dictionary.items():
     #if condition to test if the next value is greater than the max value to continue or not
     if next > maxValue:
       #sets the next value to the max value and sets the current value to the index
@@ -92,36 +92,43 @@ def longest_consecutive_repeating_char(s):
     #character = s[i]
   #return character
 
+  #declaring variables for the string to be read as a list of characters,
+  #the string length initialized to the length of string s,
+  #and a count variable set to 1,
+  #a dictionary to hold letters to be counted
   s = list(s)
   stringLength = len(s)
   count = 1
-  # declaring the dictionary to keep track of frequencies
-  directory = {}
+  dictionary = {}
 
-  # counting frequency of every char
+  #for loop to check check if each letter is the same as last and else the count is reset to 1 for that letter
   for i in range(0, stringLength - 1):
     if (s[i] != s[i + 1]):
-      if ((s[i] in directory) and directory[s[i]] > count):
+      if ((s[i] in dictionary) and dictionary[s[i]] > count):
         continue
       else:
-        directory[s[i]] = count
+        dictionary[s[i]] = count
         count = 1
     else:
       count = count + 1
+  #updates dictionary as the string with the last longest lenght is set to the count
+  dictionary[s[stringLength - 1]] = count
 
-  directory[s[stringLength - 1]] = count
-
-  # finding the maximum frequency
+  #sets max value to -1 to denote the last number recorded
   maxValue = -1
-  for k, v in directory.items():
-    if v > maxValue:
-      maxValue = v
+  #for loop to find the maximum value of how many times a letter was repeated
+  for listSoFar, lastValue in dictionary.items():
+    if lastValue > maxValue:
+      maxValue = lastValue
 
-  # adding the chars to the list with max frequency
+  #declares a dictionary to store the list of each letter's frequency
   frequencyList = []
-  for listSoFar,  in directory.items():
-    if v == maxValue:
-      frequencyList.append(k)
+  #for loop to keep a count of the max frequency of each letter that has the highest frequency
+  # since there are multiple in this test
+  for listSoFar, lastValue in dictionary.items():
+    if lastValue == maxValue:
+      #appends the list with new values added to the list so far
+      frequencyList.append(listSoFar)
 
   return frequencyList
 
