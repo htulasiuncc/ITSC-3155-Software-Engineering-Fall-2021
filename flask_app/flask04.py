@@ -65,7 +65,7 @@ def new_note():
         from datetime import date
         today = date.today()
         #format date mm/dd/yyyy
-        today- today.strftime("%m-%d-%y")
+        today= today.strftime("%m-%d-%y")
         new_record = Note(title, text, today)
         db.session.add(new_record)
         db.session.commit()
