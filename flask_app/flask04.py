@@ -13,14 +13,14 @@ from models import User as User
 app = Flask(__name__)  # create an app
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///flask_note_app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS']= False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #  Bind SQLAlchemy db object to this Flask app
 db.init_app(app)
 
 # Setup models
 with app.app_context():
-    db.create_all()   # run under the app context
+    db.create_all()  # run under the app context
 
 
 # @app.route is a decorator. It gives the function "index" special powers.
@@ -29,52 +29,50 @@ with app.app_context():
 @app.route('/')
 @app.route('/index')
 def index():
-    #get user from database
-    a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu')
+    # get user from database
+    a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu').one()
     return render_template("index.html", user=a_user)
 
 
 @app.route('/notes')
 def get_notes():
-    #retrieve user from database
-    a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu')
-    #retrieve notes from database
+    a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu').one()
     my_notes = db.session.query(Note).all()
-
-    return render_template('notes.html', notes=notes, user=a_user)
+    return render_template('notes.html', notes=my_notes, user=a_user)
 
 
 @app.route('/note/<note_id>')
 def get_note(note_id):
-    #retrieve user from database
-    aa_user = db.session.query(User).filter_by(email='htulasi@uncc.edu')
-    #retrieve note from database
-    my_note = db.session.query(Note).filter_by(id=note_id)
+    # retrieve user from database
+    a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu').one()
+    # retrieve note from database
+    my_note = db.session.query(Note).filter_by(id=note_id).one()
 
     return render_template('note.html', note=my_note, user=a_user)
 
+
 @app.route('/notes/new', methods=['GET', 'POST'])
 def new_note():
-    #check method used for request
+    # check method used for request
     if request.method == 'POST':
-        #get title data
-        title=request.form['title']
-        #get note data
-        text=request.form['noteText']
-        #create date stamp
+        # get title data
+        title = request.form['title']
+        # get note data
+        text = request.form['noteText']
+        # create date stamp
         from datetime import date
         today = date.today()
-        #format date mm/dd/yyyy
-        today= today.strftime("%m-%d-%y")
+        # format date mm/dd/yyyy
+        today = today.strftime("%m-%d-%y")
         new_record = Note(title, text, today)
         db.session.add(new_record)
         db.session.commit()
-        #ready to render response - redirect to notes listing
+        # ready to render response - redirect to notes listing
         return redirect(url_for('get_notes'))
     else:
-        #GET requst - show new note form
-        #retrieve user from database
-        a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu')
+        # GET requst - show new note form
+        # retrieve user from database
+        a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu').one()
         return render_template('new.html', user=a_user)
 
 
