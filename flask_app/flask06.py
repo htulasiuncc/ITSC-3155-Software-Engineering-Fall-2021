@@ -13,7 +13,8 @@ from forms import RegisterForm
 from flask import session
 import bcrypt
 from forms import LoginForm
-
+from models import Comment as Comment
+from forms import RegisterForm, LoginForm, CommentForm
 
 app = Flask(__name__)  # create an app
 
@@ -52,6 +53,7 @@ def get_notes():
     else:
         return redirect(url_for('login'))
 
+
 @app.route('/note/<note_id>')
 def get_note(note_id):
     # check if a user is save in session
@@ -61,7 +63,10 @@ def get_note(note_id):
         # retrieve note from database
         my_note = db.session.query(Note).filter_by(id=note_id).one()
 
-        return render_template('note.html', note=my_note, user=session['user'])
+        # create a comment form object
+        form = CommentForm()
+
+        return render_template('note.html', note=my_note, user=session['user'], form=form)
     else:
         return redirect(url_for('login'))
 
@@ -93,20 +98,21 @@ def new_note():
         # user is not in session redirect to login
         return redirect(url_for('login'))
 
+
 @app.route('/notes/edit/<note_id>', methods=['GET', 'POST'])
 def update_note(note_id):
     # check if a user is save in session
     if session.get('user'):
-        #check method used for request
+        # check method used for request
         if request.method == 'POST':
-            #get title data
+            # get title data
             title = request.form['title']
 
-            #get note data
-            text = request.form ['noteText']
+            # get note data
+            text = request.form['noteText']
             note = db.session.query(Note).filter_by(id=note_id).one()
 
-            #update note data
+            # update note data
             note.title = title
             note.text = text
 
@@ -116,11 +122,11 @@ def update_note(note_id):
             return redirect(url_for('get_notes'))
 
         else:
-            #GET request - show new note form to edit note
-            #retrieve user from database
+            # GET request - show new note form to edit note
+            # retrieve user from database
             a_user = db.session.query(User).filter_by(email='htulasi@uncc.edu').one()
 
-            #retrieve note from database
+            # retrieve note from database
             my_note = db.session.query(Note).filter_by(id=note_id).one()
 
             return render_template('new.html', note=my_note, user=session['user'])
@@ -128,11 +134,12 @@ def update_note(note_id):
         # user is not in session redirect to login
         return redirect(url_for('login'))
 
+
 @app.route('/notes/delete/<note_id>', methods=['POST'])
 def delete_note(note_id):
     # check if a user is save in session
     if session.get('user'):
-        #retrieve note from database
+        # retrieve note from database
         my_note = db.session.query(Note).filter_by(id=note_id).one()
         db.session.delete(my_note)
         db.session.commit()
@@ -141,6 +148,7 @@ def delete_note(note_id):
     else:
         # user is not in session redirect to login
         return redirect(url_for('login'))
+
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -169,6 +177,7 @@ def register():
 
     return redirect(url_for('get_notes'))
 
+
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     login_form = LoginForm()
@@ -191,6 +200,8 @@ def login():
     else:
         # form did not validate or GET request
         return render_template("login.html", form=login_form)
+
+
 @app.route('/logout')
 def logout():
     # check if a user is saved in session
@@ -198,6 +209,25 @@ def logout():
         session.clear()
 
     return redirect(url_for('index'))
+
+
+@app.route('/notes/<note_id>/comment', methods=['POST'])
+def new_comment(note_id):
+    if session.get('user'):
+        comment_form = CommentForm()
+        # validate_on_submit only validates using POST
+        if comment_form.validate_on_submit():
+            # get comment data
+            comment_text = request.form['comment']
+            new_record = Comment(comment_text, int(note_id), session['user_id'])
+            db.session.add(new_record)
+            db.session.commit()
+
+        return redirect(url_for('get_note', note_id=note_id))
+
+    else:
+        return redirect(url_for('login'))
+
 
 app.run(host=os.getenv('IP', '127.0.0.1'), port=int(os.getenv('PORT', 5000)), debug=True)
 
